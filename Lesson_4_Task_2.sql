@@ -95,4 +95,6 @@ where emp_lname = 'Dosni' or emp_lname = 'Mardy';
 Select emp_idno, emp_fname, emp_lname, emp_dept from emp_details
 where emp_dept = 47 or emp_dept = 63;
 
+
+
      
