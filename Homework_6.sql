@@ -299,3 +299,176 @@ where e.first_name like '%z%';
 
 select e.first_name, e.last_name, e.department_id, d.department_name from hr.Employees e
 right join hr.Departments d on e.department_id = d.department_id
+
+--7. From the following table, write a SQL query to find the employees who earn less than the employee of ID 182.
+--Return first name, last name and salary.
+
+select e.first_name, e.last_name, e.salary from hr.Employees e 
+join hr.Employees c on e.salary < c.salary and c.employee_id = 182;
+
+--8. From the following table, write a SQL query to find the employees and their managers.
+--Return the first name of the employee and manager
+
+select e.first_name Employee, c.first_name Manager from hr.Employees e
+join hr.Employees c on e.manager_id = c.employee_id
+
+--9. From the following tables, write a SQL query to display the department name, city, 
+--and state province for each department.
+
+select d.department_name, l.city, l.state_province from hr.Departments d
+join hr.Locations l on d.location_id = l.location_id;
+
+--10. From the following tables, write a SQL query to find out which employees have or do not have a department.
+--Return first name, last name, department ID, department name.
+
+select e.first_name, e.last_name, e.department_id, d.department_name from hr.Employees e
+left join hr.Departments d on e.department_id = d.department_id;
+
+--11. From the following table, write a SQL query to find the employees 
+--and their managers. Those managers do not work under any manager also appear in the list. 
+--Return the first name of the employee and manager.
+
+select e.first_name Employee, m.first_name Manager from hr.Employees e
+left join hr.Employees m on m.manager_id = e.employee_id;
+
+--12. From the following tables, write a SQL query to find the employees 
+--who work in the same department as the employee with the last name Taylor.
+--Return first name, last name and department ID.
+
+select e.first_name, e.last_name, e.department_id from hr.Employees e 
+join hr.Departments d on e.department_id = d.department_id and e.last_name = 'Taylor';
+
+--13. From the following tables, write a  SQL query to find all employees who joined on 
+--or after 1st January 1993 and on or before 31 August 1997.
+--Return job title, department name, employee name, and joining date of the job.
+
+select j.job_title, d.department_name, e.first_name + ' ' + e.last_name Employee_Name, h.start_date from hr.Job_History h 
+join hr.Jobs j on h.job_id = j.job_id
+join hr.Departments d on h.department_id = d.department_id
+join hr.Employees e on d.department_id = e.department_id
+where h.start_date between '1993-01-01' and '1997-08-31';
+
+--14. From the following tables, write a SQL query to calculate the difference 
+--between the maximum salary of the job and the employee's salary. 
+--Return job title, employee name, and salary difference.
+
+select j.job_title, e.first_name + ' ' + e.last_name Employee, 
+(j.max_salary - e.salary) Salary_Difference from hr.Employees e
+join hr.jobs j on e.job_id = j.job_id;
+
+--15. From the following table, write a SQL query to calculate the average salary, 
+--the number of employees receiving commissions in that department.
+--Return department name, average salary and number of employees.
+
+select d.department_name, avg(e.salary) AvgSalary, count(e.employee_id) EmployeeNumber from hr.Departments d
+join hr.Employees e on d.department_id = e.department_id
+group by d.department_name;
+
+--16. From the following tables, write a SQL query to calculate the difference between the maximum salary 
+--and the salary of all the employees who work in the department of ID 80.
+--Return job title, employee name and salary difference.
+
+select j.job_title, e.first_name + ' ' + e.last_name EmployeeName, 
+(j.max_salary - e.salary) SalaryDifference from hr.Employees e
+join hr.jobs j on e.job_id = j.job_id
+where e.department_id = 80;
+
+--17. From the following table, write a SQL query to find the name of the country, city, 
+--and departments, which are running there.
+
+select c.country_name, l.city, d.department_name from hr.Countries c 
+join hr.Locations l on c.country_id = l.country_id
+join hr.Departments d on l.location_id = d.location_id;
+
+--18. From the following tables, write a SQL query to find the department name 
+--and the full name (first and last name) of the manager.
+
+select d.department_name, e.first_name + ' ' + e.last_name Employee from hr.Departments d
+join hr.Employees e on d.manager_id = e.employee_id;
+
+--19. From the following table, write a SQL query to calculate the average salary of employees for each job title.
+
+select avg(e.salary) AvgSalary, j.job_title from hr.Employees e
+join hr.jobs j on e.job_id = j.job_id
+group by j.job_title;
+
+--20. From the following table, write a SQL query to find the employees who earn $12000 or more.
+--Return employee ID, starting date, end date, job ID and department ID.
+
+select h.* from hr.Job_History h
+join hr.Employees e on e.employee_id = h.employee_id
+where e.salary >= 12000;
+
+--21. From the following tables, write a SQL query to find out which departments have at least two employees.
+--Group the result set on country name and city. 
+--Return country name, city, and number.
+
+select c.country_name, l.city, count(d.department_id) cnt from hr.Countries c
+join hr.Locations l on c.country_id = l.country_id
+join hr.Departments d on l.location_id = d.location_id
+join hr.Employees e on d.department_id = e.department_id
+group by c.country_name, l.city;
+
+--SELECT 
+--    c.country_name, 
+--    l.city, 
+--    COUNT(d.department_id) AS cnt 
+--FROM hr.Countries c
+--JOIN hr.Locations l ON c.country_id = l.country_id
+--JOIN hr.Departments d ON l.location_id = d.location_id
+--JOIN hr.Employees e ON d.department_id = e.department_id
+--WHERE d.department_id IN 
+--    (SELECT e.department_id  -- Corrected reference
+--     FROM hr.Employees e
+--     GROUP BY e.department_id  -- Grouping by Employees table's department_id
+--     HAVING COUNT(e.employee_id) >= 2)  -- Corrected COUNT condition
+--GROUP BY c.country_name, l.city;
+
+--22. From the following tables, write a SQL query to find the department name, 
+--full name (first and last name) of the manager and their city.
+
+select d.department_name, e.first_name + ' ' + e.last_name, l.city from hr.Employees e 
+join hr.Departments d on d.manager_id = e.employee_id
+join hr.Locations l on l.location_id = d.location_id;
+
+--23. From the following tables, write a SQL query to calculate the number of days 
+--worked by employees in a department of ID 80.
+--Return employee ID, job title, number of days worked.
+
+select e.employee_id, j.job_title, datediff(DAY, h.start_date, h.end_date) Days from hr.Employees e 
+join hr.jobs j on e.job_id = j.job_id
+join hr.Job_History h on e.employee_id = h.employee_id
+where e.department_id = 80;
+
+--24. From the following tables, write a SQL query to find full name (first and last name), 
+--and salary of all employees working in any department in the city of London.
+
+select e.first_name + ' ' + e.last_name Employee, e.salary, d.department_name, l.city from  hr.Employees e
+join hr.Departments d on e.department_id = d.department_id
+join hr.Locations l on l.location_id = d.location_id
+where l.city = 'London';
+
+--25. From the following tables, write a SQL query to find full name (first and last name), job title, start 
+--and end date of last jobs of employees who did not receive commissions.
+
+select e.first_name + ' ' + e.last_name Employee, j.job_title, h.start_date, h.end_date from  hr.Employees e
+join hr.Job_History h on e.job_id = h.job_id
+join hr.jobs j on h.job_id = j.job_id
+where e.commission_pct = 0;
+
+--26. From the following tables, write a  SQL query to find the department name, department ID, 
+--and number of employees in each department
+
+select d.department_name, d.department_id from hr.Employees e 
+join hr.Departments d on e.department_id = d.department_id
+where d.department_id in 
+(select department_id from hr.Employees group by department_id having count(employee_id) > 0)
+
+--27. From the following tables, write a SQL query to find out the full name 
+--(first and last name) of the employee with an ID 
+--and the name of the country where he/she is currently employed.
+
+select e.first_name + ' ' + e.last_name Employee, e.employee_id, l.city, c.country_name from  hr.Employees e
+join hr.Departments d on e.department_id = d.department_id
+join hr.Locations l on d.location_id = l.location_id
+join hr.Countries c on l.country_id = c.country_id
